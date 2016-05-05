@@ -2,6 +2,8 @@ package xyz.hanks.hsqlite;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -94,6 +96,40 @@ public class MainActivity extends AppCompatActivity {
 
                     for (File file : files.listFiles()) {
                         Log.e("..............",file.getAbsolutePath());
+
+                        if(file.getName().endsWith(".db")){
+                            SQLiteDatabase openDatabase = SQLiteDatabase.openDatabase(file.getAbsolutePath(), null, SQLiteDatabase.OPEN_READWRITE);
+
+                            Cursor cursor2 = openDatabase.query("sqlite_master", null, "type in('table','view')", null, null, null, "name");
+
+                                cursor2.moveToFirst();
+                                while (!cursor2.isAfterLast()) {
+                                    if (cursor2.getString(1).equals("android_metadata")) {
+                                        break;
+                                    }
+                                    cursor2.moveToNext();
+                                }
+                                cursor2.moveToFirst();
+                                while (!cursor2.isAfterLast()) {
+
+                                    Log.e("........",cursor2.getString(1)+","+ cursor2.getString(4)+","+ cursor2.getString(0));
+                                    cursor2.moveToNext();
+                                }
+                                if (!(cursor2 == null || cursor2.isClosed())) {
+                                    try {
+                                        cursor2.close();
+                                    } catch (Exception e5) {
+                                    }
+                                }
+                                if (openDatabase != null && openDatabase.isOpen()) {
+                                    try {
+                                        openDatabase.close();
+                                    } catch (Exception e6) {
+                                    }
+                                }
+
+
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
