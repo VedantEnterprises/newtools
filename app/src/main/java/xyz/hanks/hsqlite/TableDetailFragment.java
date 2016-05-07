@@ -30,6 +30,7 @@ public class TableDetailFragment extends Fragment {
     private ArrayList<String> columnList;
     private ListView listView;
     private GridViewAdapter adapter;
+    private float[] lengths;
 
     public static TableDetailFragment newInstance(String dbPath, String tableName, ArrayList<String> columnList) {
         Bundle args = new Bundle();
@@ -59,6 +60,7 @@ public class TableDetailFragment extends Fragment {
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
         //        gridView = (GridView) getView().findViewById(R.id.gridView);
+
         listView = (ListView) getView().findViewById(R.id.listView);
 
         columnList = getArguments().getStringArrayList(TABLE_COLUMN_LIST);
@@ -78,12 +80,7 @@ public class TableDetailFragment extends Fragment {
     private View getRowView() {
 
         RowView rowView = new RowView(getContext());
-        float[] lengths = new float[columnList.size()];
-        float width = 0;
-        for (int i = 0; i < columnList.size(); i++) {
-            lengths[i] = (columnList.get(i).length() * dp2px(10));
-            width += lengths[i];
-        }
+
         rowView.setTextLengthArray(lengths);
         return rowView;
     }
@@ -125,7 +122,29 @@ public class TableDetailFragment extends Fragment {
             }
         }
 
+        // 计算 width
 
+        String[] firstRow = null;
+        if(datas.size()>0){
+             firstRow = datas.get(0);
+        }
+
+        lengths = new float[columnList.size()];
+        int char_width = dp2px(6);
+        for (int i = 0; i < columnList.size(); i++) {
+
+            int width = (columnList.get(i).length() * char_width);
+            if(firstRow!=null) {
+                if (firstRow[i]==null) firstRow[i] = "";
+                
+                if (firstRow[i].length() * char_width > dp2px(200)) {
+                    width = dp2px(200);
+                } else {
+                    width = Math.max(width,firstRow[i].length() * char_width);
+                }
+            }
+            lengths[i] = width ;
+        }
     }
 
     /**
@@ -160,7 +179,7 @@ public class TableDetailFragment extends Fragment {
 
 
             if (position == 0) {
-                convertView.setBackgroundColor(Color.parseColor("#234234"));
+                convertView.setBackgroundColor(Color.parseColor("#a1a1a1"));
                 if (convertView instanceof RowView) {
                     ((RowView) convertView).setTextArray(columnList.toArray(new String[]{}));
                 }

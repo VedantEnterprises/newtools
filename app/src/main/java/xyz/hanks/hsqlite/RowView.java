@@ -47,8 +47,14 @@ public class RowView extends View {
     }
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        setMeasuredDimension( 1080 ,40);
+        int width = 0;
+        int height = dp2px(20);
+        if(mTextLengthArray!=null) {
+            for (int i = 0; i < mTextLengthArray.length; i++) {
+                width += mTextLengthArray[i];
+            }
+        }
+        setMeasuredDimension(width,height);
     }
 
     public void setTextArray(String[] textArray) {
@@ -58,10 +64,11 @@ public class RowView extends View {
 
     public void setTextLengthArray(float[] textLengthArray) {
         mTextLengthArray = textLengthArray;
-
+        requestLayout();
     }
 
     private void invalidateTextPaintAndMeasurements() {
+        mExampleDimension = dp2px(10);
         mTextPaint.setTextSize(mExampleDimension);
         mTextPaint.setColor(mExampleColor);
 
@@ -77,17 +84,17 @@ public class RowView extends View {
         int paddingRight = getPaddingRight();
         int paddingBottom = getPaddingBottom();
 
-        if (mTextAttay == null || mTextAttay.length <= 0 || mTextLengthArray == null || mTextLengthArray.length <= 0 ) {
+        if (mTextAttay == null || mTextAttay.length <= 0 || mTextLengthArray == null || mTextLengthArray.length <= 0) {
             return;
         }
         // Draw the text.
         float startX = paddingLeft;
         float startY = getHeight() - mTextHeight;
-        for (int i = 0; i < mTextAttay.length && i < mTextLengthArray.length; i++) {
+        for (int i = 0; i < mTextLengthArray.length; i++) {
             String s = mTextAttay[i];
-            if(s ==null) continue;
+            if (s == null) s = "";
             int count = (int) (mTextLengthArray[i] / dp2px(10));
-            s = s.substring(0, count<=s.length()? count:s.length());
+            s = s.substring(0, count <= s.length() ? count : s.length());
             canvas.drawText(s,
                     startX,
                     startY,
