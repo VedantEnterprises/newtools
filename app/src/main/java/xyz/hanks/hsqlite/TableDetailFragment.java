@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +41,15 @@ public class TableDetailFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * 处理listview嵌套listview，子listview不完全显示问题
+     *
+     * @param listView
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        // 获取ListView对应的Adapter
+
+    }
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,12 +57,11 @@ public class TableDetailFragment extends Fragment {
         return view;
     }
 
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
         //        gridView = (GridView) getView().findViewById(R.id.gridView);
         listView = (ListView) getView().findViewById(R.id.listView);
 
-                columnList = getArguments().getStringArrayList(TABLE_COLUMN_LIST);
+        columnList = getArguments().getStringArrayList(TABLE_COLUMN_LIST);
         //        gridView.setColumnWidth(100); // 设置列表项宽
         //        gridView.setHorizontalSpacing(5); // 设置列表项水平间距
         //        gridView.setStretchMode(GridView.NO_STRETCH);
@@ -70,25 +76,22 @@ public class TableDetailFragment extends Fragment {
     }
 
     private View getRowView() {
-        LinearLayout linearLayout = new LinearLayout(getContext());
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        for (String s : columnList) {
-            TextView textView = new TextView(getContext());
-            textView.setTag(s);
-            textView.setTextSize(12);
-            textView.setSingleLine(true);
-            textView.setMaxEms(80);
-            linearLayout.addView(textView);
-            textView.getLayoutParams().width =  (s.length() * dp2px(10));
+
+        RowView rowView = new RowView(getContext());
+        float[] lengths = new float[columnList.size()];
+        float width = 0;
+        for (int i = 0; i < columnList.size(); i++) {
+            lengths[i] = (columnList.get(i).length() * dp2px(10));
+            width += lengths[i];
         }
-        return linearLayout;
+        rowView.setTextLengthArray(lengths);
+        return rowView;
     }
 
     public int dp2px(float dp) {
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
-
 
     private void getData() {
         String dbPath = getArguments().getString(DB_PATH);
@@ -125,15 +128,6 @@ public class TableDetailFragment extends Fragment {
 
     }
 
-
-    /**
-     * 处理listview嵌套listview，子listview不完全显示问题
-     * @param listView
-     */
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        // 获取ListView对应的Adapter
-
-    }
     /**
      * GirdView 数据适配器
      */
@@ -142,7 +136,7 @@ public class TableDetailFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return datas.size()+1;
+            return datas.size() + 1;
         }
 
         @Override
@@ -159,42 +153,33 @@ public class TableDetailFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if (convertView == null) {
-//                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-//                convertView = layoutInflater.inflate(R.layout.grid_item, null);
+                //                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+                //                convertView = layoutInflater.inflate(R.layout.grid_item, null);
                 convertView = getRowView();
             }
 
 
-
-            if(position == 0){
+            if (position == 0) {
                 convertView.setBackgroundColor(Color.parseColor("#234234"));
-                for (int i = 0; i < columnList.size(); i++) {
-                    View view = ((ViewGroup) convertView).getChildAt(i);
-                    if(view != null && view instanceof TextView){
-                        ((TextView)view).setText(columnList.get(i));
-                    }
+                if (convertView instanceof RowView) {
+                    ((RowView) convertView).setTextArray(columnList.toArray(new String[]{}));
                 }
-            }else {
+            } else {
                 convertView.setBackgroundColor(Color.parseColor("#e1e1e1"));
-                String[] strings = datas.get(position-1);
-                for (int i = 0; i < strings.length; i++) {
-                    View view = ((ViewGroup) convertView).getChildAt(i);
-                    if(view != null && view instanceof TextView){
-                        ((TextView)view).setText(strings[i]);
-                    }
+                String[] strings = datas.get(position - 1);
+                if (convertView instanceof RowView) {
+                    ((RowView) convertView).setTextArray(strings);
                 }
             }
 
-
-
-//            StringBuilder sb = new StringBuilder();
-//            for (String string : strings) {
-//                if (TextUtils.isEmpty(string)) {
-//                    continue;
-//                }
-//                sb.append(string.length()>100?string.substring(0,100):string).append(" | ");
-//            }
-//            text.setText(sb.toString());
+            //            StringBuilder sb = new StringBuilder();
+            //            for (String string : strings) {
+            //                if (TextUtils.isEmpty(string)) {
+            //                    continue;
+            //                }
+            //                sb.append(string.length()>100?string.substring(0,100):string).append(" | ");
+            //            }
+            //            text.setText(sb.toString());
             return convertView;
         }
     }

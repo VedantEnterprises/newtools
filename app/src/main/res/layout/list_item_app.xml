@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="vertical"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
+
+    <ImageView
+        android:id="@+id/ic_logo"
+        android:layout_centerVertical="true"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="12dp"
+        android:src="@mipmap/ic_launcher"/>
+    <TextView
+        android:id="@+id/tv_appname"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_toRightOf="@+id/ic_logo"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:text="Medium Text"
+        android:textColor="#000"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/tv_packagename"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_below="@+id/tv_appname"
+        android:layout_toRightOf="@+id/ic_logo"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="Medium Text"
+        android:textColor="#888"
+        android:textSize="12sp"/>
+</RelativeLayout>
