@@ -2,6 +2,7 @@ package xyz.hanks.hsqlite;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,6 +30,8 @@ public class TableDetailFragment extends Fragment {
     List<String[]> datas = new ArrayList<>();
     private GridView gridView;
     private ArrayList<String> columnList;
+    private ListView listView;
+    private GridViewAdapter adapter;
 
     public static TableDetailFragment newInstance(String dbPath, String tableName, ArrayList<String> columnList) {
         Bundle args = new Bundle();
@@ -47,19 +52,43 @@ public class TableDetailFragment extends Fragment {
 
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
-        gridView = (GridView) getView().findViewById(R.id.gridView);
+        //        gridView = (GridView) getView().findViewById(R.id.gridView);
+        listView = (ListView) getView().findViewById(R.id.listView);
 
+                columnList = getArguments().getStringArrayList(TABLE_COLUMN_LIST);
+        //        gridView.setColumnWidth(100); // 设置列表项宽
+        //        gridView.setHorizontalSpacing(5); // 设置列表项水平间距
+        //        gridView.setStretchMode(GridView.NO_STRETCH);
+        //        gridView.setNumColumns(columnList.size()); // 设置列数量=列表集合数
 
-        columnList = getArguments().getStringArrayList(TABLE_COLUMN_LIST);
-        gridView.setColumnWidth(100); // 设置列表项宽
-        gridView.setHorizontalSpacing(5); // 设置列表项水平间距
-        gridView.setStretchMode(GridView.NO_STRETCH);
-        gridView.setNumColumns(columnList.size()); // 设置列数量=列表集合数
+        //        gridView.setAdapter(new GridViewAdapter());
 
-        gridView.setAdapter(new GridViewAdapter());
+        adapter = new GridViewAdapter();
+        listView.setAdapter(adapter);
         getData();
 
     }
+
+    private View getRowView() {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        for (String s : columnList) {
+            TextView textView = new TextView(getContext());
+            textView.setTag(s);
+            textView.setTextSize(12);
+            textView.setSingleLine(true);
+            textView.setMaxEms(80);
+            linearLayout.addView(textView);
+            textView.getLayoutParams().width =  (s.length() * dp2px(10));
+        }
+        return linearLayout;
+    }
+
+    public int dp2px(float dp) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
 
     private void getData() {
         String dbPath = getArguments().getString(DB_PATH);
@@ -78,10 +107,33 @@ public class TableDetailFragment extends Fragment {
             }
             datas.add(row);
         }
+        adapter.notifyDataSetChanged();
+        setListViewHeightBasedOnChildren(listView);
+        if (!(cursor == null || cursor.isClosed())) {
+            try {
+                cursor.close();
+            } catch (Exception e5) {
+            }
+        }
+        if (database != null && database.isOpen()) {
+            try {
+                database.close();
+            } catch (Exception e6) {
+            }
+        }
+
 
     }
 
 
+    /**
+     * 处理listview嵌套listview，子listview不完全显示问题
+     * @param listView
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        // 获取ListView对应的Adapter
+
+    }
     /**
      * GirdView 数据适配器
      */
@@ -90,7 +142,7 @@ public class TableDetailFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return datas.size()*columnList.size();
+            return datas.size()+1;
         }
 
         @Override
@@ -106,13 +158,43 @@ public class TableDetailFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            if(convertView==null) {
-                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-                convertView = layoutInflater.inflate(R.layout.grid_item, null);
+            if (convertView == null) {
+//                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+//                convertView = layoutInflater.inflate(R.layout.grid_item, null);
+                convertView = getRowView();
             }
 
-            TextView text = (TextView) convertView.findViewById(R.id.text);
-            text.setText(datas.get(position/columnList.size())[position%columnList.size()]);
+
+
+            if(position == 0){
+                convertView.setBackgroundColor(Color.parseColor("#234234"));
+                for (int i = 0; i < columnList.size(); i++) {
+                    View view = ((ViewGroup) convertView).getChildAt(i);
+                    if(view != null && view instanceof TextView){
+                        ((TextView)view).setText(columnList.get(i));
+                    }
+                }
+            }else {
+                convertView.setBackgroundColor(Color.parseColor("#e1e1e1"));
+                String[] strings = datas.get(position-1);
+                for (int i = 0; i < strings.length; i++) {
+                    View view = ((ViewGroup) convertView).getChildAt(i);
+                    if(view != null && view instanceof TextView){
+                        ((TextView)view).setText(strings[i]);
+                    }
+                }
+            }
+
+
+
+//            StringBuilder sb = new StringBuilder();
+//            for (String string : strings) {
+//                if (TextUtils.isEmpty(string)) {
+//                    continue;
+//                }
+//                sb.append(string.length()>100?string.substring(0,100):string).append(" | ");
+//            }
+//            text.setText(sb.toString());
             return convertView;
         }
     }
