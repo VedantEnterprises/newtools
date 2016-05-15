@@ -31,6 +31,8 @@ public class TableDetailFragment extends Fragment {
     private ListView listView;
     private GridViewAdapter adapter;
     private float[] lengths;
+    private int limit = 50;
+    private int page = 0;
 
     public static TableDetailFragment newInstance(String dbPath, String tableName, ArrayList<String> columnList) {
         Bundle args = new Bundle();
@@ -98,7 +100,7 @@ public class TableDetailFragment extends Fragment {
 
         SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, 0);
         String[] columns = columnList.toArray(new String[]{});
-        Cursor cursor = database.query(tableName, columns, null, null, null, null, null, "50");
+        Cursor cursor = database.query(tableName, columns, null, null, null, null, null, "limit "+limit+" offset "+ (page * limit));
         while (cursor.moveToNext()) {
 
             String[] row = new String[columns.length];
