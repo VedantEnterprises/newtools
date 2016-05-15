@@ -48,7 +48,7 @@ public class RowView extends View {
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = 0;
-        int height = dp2px(20);
+        int height = dp2px(22);
         if(mTextLengthArray!=null) {
             for (int i = 0; i < mTextLengthArray.length; i++) {
                 width += mTextLengthArray[i];

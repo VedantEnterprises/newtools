@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class TableDetailFragment extends Fragment {
     private static final String DB_PATH = "db_path";
     private static final String TABLE_NAME = "table_name";
     private static final String TABLE_COLUMN_LIST = "table_column_list";
-    List<String[]> datas = new ArrayList<>();
+    List<String[]> data = new ArrayList<>();
     private GridView gridView;
     private ArrayList<String> columnList;
     private ListView listView;
@@ -33,6 +34,7 @@ public class TableDetailFragment extends Fragment {
     private float[] lengths;
     private int limit = 50;
     private int page = 0;
+    private TextView tv_page;
 
     public static TableDetailFragment newInstance(String dbPath, String tableName, ArrayList<String> columnList) {
         Bundle args = new Bundle();
@@ -64,6 +66,24 @@ public class TableDetailFragment extends Fragment {
         //        gridView = (GridView) getView().findViewById(R.id.gridView);
 
         listView = (ListView) getView().findViewById(R.id.listView);
+        View bt_next = getView().findViewById(R.id.bt_next);
+        View bt_pre = getView().findViewById(R.id.bt_pre);
+        tv_page = (TextView) getView().findViewById(R.id.tv_page);
+        updatePageNumber();
+        bt_next.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                page++;
+                getData();
+            }
+        });
+
+        bt_pre.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                page--;
+                if(page<0) page = 0;
+                getData();
+            }
+        });
 
         columnList = getArguments().getStringArrayList(TABLE_COLUMN_LIST);
         //        gridView.setColumnWidth(100); // 设置列表项宽
@@ -77,6 +97,10 @@ public class TableDetailFragment extends Fragment {
         listView.setAdapter(adapter);
         getData();
 
+    }
+
+    private void updatePageNumber() {
+        tv_page.setText("第" + (page+1)+"页");
     }
 
     private View getRowView() {
@@ -100,14 +124,16 @@ public class TableDetailFragment extends Fragment {
 
         SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, 0);
         String[] columns = columnList.toArray(new String[]{});
-        Cursor cursor = database.query(tableName, columns, null, null, null, null, null, "limit "+limit+" offset "+ (page * limit));
+        Cursor cursor = database.query(tableName, columns, null, null, null, null, null, (page * limit)+" , "+limit );
+        data.clear();
+        updatePageNumber();
         while (cursor.moveToNext()) {
 
             String[] row = new String[columns.length];
             for (int i = 0; i < columns.length; i++) {
                 row[i] = cursor.getString(cursor.getColumnIndex(columns[i]));
             }
-            datas.add(row);
+            data.add(row);
         }
         adapter.notifyDataSetChanged();
         setListViewHeightBasedOnChildren(listView);
@@ -127,8 +153,8 @@ public class TableDetailFragment extends Fragment {
         // 计算 width
 
         String[] firstRow = null;
-        if(datas.size()>0){
-             firstRow = datas.get(0);
+        if(data.size()>0){
+             firstRow = data.get(0);
         }
 
         lengths = new float[columnList.size()];
@@ -137,7 +163,7 @@ public class TableDetailFragment extends Fragment {
 
             int width = (columnList.get(i).length() * char_width);
             if(firstRow!=null) {
-                if (firstRow[i]==null) firstRow[i] = "";
+                if (firstRow[i]==null) firstRow[i] = " ";
                 
                 if (firstRow[i].length() * char_width > dp2px(200)) {
                     width = dp2px(200);
@@ -145,7 +171,7 @@ public class TableDetailFragment extends Fragment {
                     width = Math.max(width,firstRow[i].length() * char_width);
                 }
             }
-            lengths[i] = width ;
+            lengths[i] = Math.max(dp2px(20),width) ;
         }
     }
 
@@ -157,12 +183,12 @@ public class TableDetailFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return datas.size() + 1;
+            return data.size() + 1;
         }
 
         @Override
         public Object getItem(int position) {
-            return datas.get(position);
+            return data.get(position);
         }
 
         @Override
@@ -187,7 +213,7 @@ public class TableDetailFragment extends Fragment {
                 }
             } else {
                 convertView.setBackgroundColor(Color.parseColor("#e1e1e1"));
-                String[] strings = datas.get(position - 1);
+                String[] strings = data.get(position - 1);
                 if (convertView instanceof RowView) {
                     ((RowView) convertView).setTextArray(strings);
                 }
