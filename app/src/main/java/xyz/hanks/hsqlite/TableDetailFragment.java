@@ -171,7 +171,7 @@ public class TableDetailFragment extends Fragment {
                     width = Math.max(width,firstRow[i].length() * char_width);
                 }
             }
-            lengths[i] = Math.max(dp2px(20),width) ;
+            lengths[i] = Math.max(dp2px(50),width) ;
         }
     }
 
