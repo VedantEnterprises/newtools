@@ -200,8 +200,6 @@ public class TableDetailFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if (convertView == null) {
-                //                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-                //                convertView = layoutInflater.inflate(R.layout.grid_item, null);
                 convertView = getRowView();
             }
 
@@ -219,14 +217,6 @@ public class TableDetailFragment extends Fragment {
                 }
             }
 
-            //            StringBuilder sb = new StringBuilder();
-            //            for (String string : strings) {
-            //                if (TextUtils.isEmpty(string)) {
-            //                    continue;
-            //                }
-            //                sb.append(string.length()>100?string.substring(0,100):string).append(" | ");
-            //            }
-            //            text.setText(sb.toString());
             return convertView;
         }
     }
