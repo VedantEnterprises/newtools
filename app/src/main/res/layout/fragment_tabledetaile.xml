@@ -6,16 +6,21 @@
               android:orientation="vertical">
 
     <!--<HorizontalScrollView android:layout_width="match_parent"-->
-                          <!--android:layout_height="match_parent">-->
-        <!---->
+    <!--android:layout_height="match_parent">-->
+    <!---->
     <!--<GridView android:id="@+id/gridView" android:layout_width="1000dp"-->
-              <!--android:layout_height="match_parent"/>-->
+    <!--android:layout_height="match_parent"/>-->
     <!--</HorizontalScrollView>-->
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal">
-        <Button android:layout_width="wrap_content" android:layout_height="match_parent" android:text="上一页" android:id="@+id/bt_pre"/>
-        <Button android:layout_width="wrap_content" android:layout_height="match_parent" android:text="下一页" android:id="@+id/bt_next"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="match_parent" android:text="第1页" android:id="@+id/tv_page"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="40dp"
+                  android:orientation="horizontal">
+        <Button android:id="@+id/bt_pre" android:layout_width="wrap_content"
+                android:layout_height="match_parent" android:text="上一页"/>
+        <Button android:id="@+id/bt_next" android:layout_width="wrap_content"
+                android:layout_height="match_parent" android:text="下一页"/>
+        <TextView android:id="@+id/tv_page" android:layout_width="wrap_content"
+                  android:gravity="center"
+                  android:layout_height="match_parent" android:text="第1页"/>
     </LinearLayout>
 
     <HorizontalScrollView
@@ -25,7 +30,7 @@
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height = "match_parent"
+            android:layout_height="match_parent"
         />
     </HorizontalScrollView>
 </LinearLayout>
