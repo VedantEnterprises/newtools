@@ -39,17 +39,16 @@ public class MainActivity extends AppCompatActivity {
 
         for (ApplicationInfo app : apps) {
             //checks for flags; if flagged, check if updated system app
-                        if((app.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 1) {
-                            // installedApps.add(app);
-                            //it's a system app, not interested
-                        } else{
-                            //Discard this one
-                            //in this case, it should be a user-installed app
-                            App tmp = new App();
-                            tmp.applicationInfo = app;
-                            data.add(tmp);
-                        }
-
+            if ((app.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 1) {
+                // installedApps.add(app);
+                //it's a system app, not interested
+            } else {
+                //Discard this one
+                //in this case, it should be a user-installed app
+                App tmp = new App();
+                tmp.applicationInfo = app;
+                data.add(tmp);
+            }
 
 
         }
@@ -73,20 +72,19 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("首页");
-//        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.vector_ic_menu));
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-
-    class App {
-        ApplicationInfo applicationInfo;
-        String dataDir;
+        mToolbar.setNavigationIcon(R.drawable.ic_menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    class App {
+        ApplicationInfo applicationInfo;
+        String dataDir;
     }
 
     class AppAdapter extends BaseAdapter {
