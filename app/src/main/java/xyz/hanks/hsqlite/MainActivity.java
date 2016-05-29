@@ -3,6 +3,7 @@ package xyz.hanks.hsqlite;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("首页");
+//        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.vector_ic_menu));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
