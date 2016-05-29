@@ -27,6 +27,7 @@ public class DbListFragment extends Fragment {
     private static final String APP_DATA_PATH = "app_data_path";
     private ListView listView;
     private List<String> dbList = new ArrayList<>();
+    private List<String> dbNameList = new ArrayList<>();
     private ArrayAdapter adapter;
 
 
@@ -47,16 +48,13 @@ public class DbListFragment extends Fragment {
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
         listView = (ListView) getView().findViewById(R.id.listView);
-        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, dbList);
+        adapter = new ArrayAdapter(getActivity(), R.layout.list_item_db_list, dbNameList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //getDBDetail(dbList.get(position));
-
-                getFragmentManager().beginTransaction().add(R.id.fm_container,TableListFragment.newInstance(dbList.get(position))).addToBackStack("tableList").commit();
+                getFragmentManager().beginTransaction().add(R.id.fm_container, TableListFragment.newInstance(dbList.get(position))).addToBackStack("tableList").commit();
             }
         });
 
@@ -94,8 +92,8 @@ public class DbListFragment extends Fragment {
 
 
     /*
-  * 通过递归得到某一路径下所有的目录及其文件
-  */
+      * 通过递归得到某一路径下所有的目录及其文件
+      */
     private void getFiles(String filePath) {
         File root = new File(filePath);
         File[] files = root.listFiles();
@@ -105,6 +103,7 @@ public class DbListFragment extends Fragment {
             } else {
                 if (file.getName().endsWith(".db")) {
                     dbList.add(file.getAbsolutePath());
+                    dbNameList.add(file.getName());
                 }
             }
         }
