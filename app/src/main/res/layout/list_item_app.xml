@@ -50,5 +50,6 @@
                android:layout_alignParentRight="true"
                android:layout_centerVertical="true"
                android:padding="12dp"
+               android:tint="@color/textColorSecondary"
                app:srcCompat="@drawable/vector_drawable_ic_add"/>
 </RelativeLayout>

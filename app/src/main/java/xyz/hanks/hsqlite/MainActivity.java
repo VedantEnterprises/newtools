@@ -1,5 +1,6 @@
 package xyz.hanks.hsqlite;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("首页");
         setSupportActionBar(mToolbar);
+        mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setNavigationIcon(R.drawable.ic_menu);
     }
 

@@ -46,6 +46,7 @@ public class DbListFragment extends Fragment {
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
+        getActivity().setTitle("数据库");
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new DbListAdapter(view.getContext(), dbNameList);
