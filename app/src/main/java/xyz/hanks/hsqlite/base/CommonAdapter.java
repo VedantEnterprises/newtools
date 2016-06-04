@@ -2,7 +2,6 @@ package xyz.hanks.hsqlite.base;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -11,8 +10,6 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,26 +21,6 @@ import xyz.hanks.hsqlite.R;
  */
 public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    /**
-     * Use with {@link #openLoadAnimation}
-     */
-    public static final int ALPHAIN = 0x00000001;
-    /**
-     * Use with {@link #openLoadAnimation}
-     */
-    public static final int SCALEIN = 0x00000002;
-    /**
-     * Use with {@link #openLoadAnimation}
-     */
-    public static final int SLIDEIN_BOTTOM = 0x00000003;
-    /**
-     * Use with {@link #openLoadAnimation}
-     */
-    public static final int SLIDEIN_LEFT = 0x00000004;
-    /**
-     * Use with {@link #openLoadAnimation}
-     */
-    public static final int SLIDEIN_RIGHT = 0x00000005;
     protected static final int HEADER_VIEW = 0x00000111;
     protected static final int LOADING_VIEW = 0x00000222;
     protected static final int FOOTER_VIEW = 0x00000333;
@@ -54,8 +31,6 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
     protected List<T> mData;
     private boolean mNextLoadEnable = false;
     private boolean mLoadingMoreEnable = false;
-    private boolean mFirstOnlyEnable = true;
-    private boolean mOpenAnimationEnable = false;
     private boolean mEmptyEnable;
     private boolean mHeadAndEmptyEnable;
     private Interpolator mInterpolator = new LinearInterpolator();
@@ -345,7 +320,6 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
                 break;
             default:
                 convert((BaseViewHolder) holder, mData.get(holder.getLayoutPosition() - getHeaderViewsCount()));
-                onBindDefViewHolder((BaseViewHolder) holder, mData.get(holder.getLayoutPosition() - getHeaderViewsCount()));
                 break;
         }
 
@@ -462,22 +436,6 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
         return mLayoutInflater.inflate(layoutResId, parent, false);
     }
 
-    /**
-     * @see #convert(BaseViewHolder, Object) ()
-     * @deprecated This method is deprecated
-     * {@link #convert(BaseViewHolder, Object)} depending on your use case.
-     */
-    @Deprecated
-    protected void onBindDefViewHolder(BaseViewHolder holder, T item) {
-    }
-
-    public void openLoadAnimation() {
-        this.mOpenAnimationEnable = true;
-    }
-
-    public void isFirstOnly(boolean firstOnly) {
-        this.mFirstOnlyEnable = firstOnly;
-    }
 
     /**
      * Implement this method and use the helper to adapt the view to the given item.
@@ -493,17 +451,12 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
 
 
-    @IntDef({ALPHAIN, SCALEIN, SLIDEIN_BOTTOM, SLIDEIN_LEFT, SLIDEIN_RIGHT})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationType {
-    }
-
     public interface OnRecyclerViewItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
     public interface OnRecyclerViewItemLongClickListener {
-        public boolean onItemLongClick(View view, int position);
+        boolean onItemLongClick(View view, int position);
     }
 
 

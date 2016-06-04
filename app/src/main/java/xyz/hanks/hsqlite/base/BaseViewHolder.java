@@ -33,8 +33,6 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
 
     private final Context context;
 
-    public View convertView;
-
     /**
      * Package private field to retain the associated user object and detect a change
      */
@@ -45,14 +43,8 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
         super(view);
         this.context = context;
         this.views = new SparseArray<View>();
-        convertView = view;
-
     }
 
-    public View getConvertView() {
-
-        return convertView;
-    }
 
     /**
      * Will set the text of a TextView.
@@ -448,7 +440,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     public <T extends View> T getView(int viewId) {
         View view = views.get(viewId);
         if (view == null) {
-            view = convertView.findViewById(viewId);
+            view = itemView.findViewById(viewId);
             views.put(viewId, view);
         }
         return (T) view;
