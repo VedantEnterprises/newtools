@@ -1,4 +1,4 @@
-package xyz.hanks.hsqlite;
+package xyz.hanks.hsqlite.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,7 +12,7 @@ import android.view.View;
  * TODO: document your custom view class.
  */
 public class RowView extends View {
-    private int mExampleColor = Color.BLUE; // TODO: use a default from R.color...
+    private int mExampleColor = Color.BLACK; // TODO: use a default from R.color...
     private float mExampleDimension = 14; // TODO: use a default from R.dimen...
 
     private TextPaint mTextPaint;
@@ -88,8 +88,8 @@ public class RowView extends View {
             return;
         }
         // Draw the text.
-        float startX = paddingLeft;
-        float startY = getHeight() - mTextHeight;
+        float startX = paddingLeft + 10;
+        float startY = getHeight() - mTextHeight / 2;
         for (int i = 0; i < mTextLengthArray.length; i++) {
             String s = mTextAttay[i];
             if (s == null) s = "";
@@ -100,6 +100,8 @@ public class RowView extends View {
                     startY,
                     mTextPaint);
             startX += mTextLengthArray[i];
+            canvas.drawLine(startX, 0, startX + 1, getHeight(), mTextPaint);
+            startX += 5;
         }
     }
 

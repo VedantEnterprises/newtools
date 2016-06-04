@@ -18,6 +18,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.hanks.hsqlite.view.RowView;
+
 /**
  * Created by hanks on 16/5/6.
  */
@@ -176,7 +178,7 @@ public class TableDetailFragment extends Fragment {
                         width = Math.max(width, firstRow[i].length() * char_width);
                     }
                 }
-                lengths[i] = Math.max(dp2px(50), width);
+                lengths[i] = Math.max(dp2px(50), width) + 10;
             }
         } catch (Exception e) {
             e.printStackTrace();
