@@ -117,61 +117,69 @@ public class TableDetailFragment extends Fragment {
     }
 
     private void getData() {
-        String dbPath = getArguments().getString(DB_PATH);
-        String tableName = getArguments().getString(TABLE_NAME);
-        if (TextUtils.isEmpty(dbPath) || TextUtils.isEmpty(tableName)) return;
+        try {
+            String dbPath = getArguments().getString(DB_PATH);
+            String tableName = getArguments().getString(TABLE_NAME);
+            if (TextUtils.isEmpty(dbPath) || TextUtils.isEmpty(tableName)) return;
 
 
-        SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, 0);
-        String[] columns = columnList.toArray(new String[]{});
-        Cursor cursor = database.query(tableName, columns, null, null, null, null, null, (page * limit)+" , "+limit );
-        data.clear();
-        updatePageNumber();
-        while (cursor.moveToNext()) {
-
-            String[] row = new String[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                row[i] = cursor.getString(cursor.getColumnIndex(columns[i]));
+            SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, 0);
+            String[] columns = columnList.toArray(new String[]{});
+            Cursor cursor = database.query(tableName, columns, null, null, null, null, null, (page * limit) + " , " + limit);
+            data.clear();
+            updatePageNumber();
+            while (cursor.moveToNext()) {
+                String[] row = new String[columns.length];
+                for (int i = 0; i < columns.length; i++) {
+                    try {
+                        row[i] = cursor.getString(cursor.getColumnIndex(columns[i]));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        row[i] = "";
+                    }
+                }
+                data.add(row);
             }
-            data.add(row);
-        }
-        adapter.notifyDataSetChanged();
-        setListViewHeightBasedOnChildren(listView);
-        if (!(cursor == null || cursor.isClosed())) {
-            try {
-                cursor.close();
-            } catch (Exception e5) {
-            }
-        }
-        if (database != null && database.isOpen()) {
-            try {
-                database.close();
-            } catch (Exception e6) {
-            }
-        }
-
-        // 计算 width
-
-        String[] firstRow = null;
-        if(data.size()>0){
-             firstRow = data.get(0);
-        }
-
-        lengths = new float[columnList.size()];
-        int char_width = dp2px(6);
-        for (int i = 0; i < columnList.size(); i++) {
-
-            int width = (columnList.get(i).length() * char_width);
-            if(firstRow!=null) {
-                if (firstRow[i]==null) firstRow[i] = " ";
-                
-                if (firstRow[i].length() * char_width > dp2px(200)) {
-                    width = dp2px(200);
-                } else {
-                    width = Math.max(width,firstRow[i].length() * char_width);
+            adapter.notifyDataSetChanged();
+            setListViewHeightBasedOnChildren(listView);
+            if (!(cursor == null || cursor.isClosed())) {
+                try {
+                    cursor.close();
+                } catch (Exception e5) {
                 }
             }
-            lengths[i] = Math.max(dp2px(50),width) ;
+            if (database != null && database.isOpen()) {
+                try {
+                    database.close();
+                } catch (Exception e6) {
+                }
+            }
+
+            // 计算 width
+
+            String[] firstRow = null;
+            if (data.size() > 0) {
+                firstRow = data.get(0);
+            }
+
+            lengths = new float[columnList.size()];
+            int char_width = dp2px(6);
+            for (int i = 0; i < columnList.size(); i++) {
+
+                int width = (columnList.get(i).length() * char_width);
+                if (firstRow != null) {
+                    if (firstRow[i] == null) firstRow[i] = " ";
+
+                    if (firstRow[i].length() * char_width > dp2px(200)) {
+                        width = dp2px(200);
+                    } else {
+                        width = Math.max(width, firstRow[i].length() * char_width);
+                    }
+                }
+                lengths[i] = Math.max(dp2px(50), width);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

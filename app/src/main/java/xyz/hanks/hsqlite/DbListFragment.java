@@ -101,6 +101,9 @@ public class DbListFragment extends Fragment {
       */
     private void getFiles(String filePath) {
         File root = new File(filePath);
+        if (!root.exists()) {
+            return;
+        }
         File[] files = root.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
