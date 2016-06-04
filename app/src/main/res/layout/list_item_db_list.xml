@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@android:id/text1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_vertical"
-          android:paddingTop="16dp"
-          android:paddingBottom="16dp"
-          android:minHeight="?android:attr/listPreferredItemHeightSmall"
-          android:paddingLeft="16dp"
-          android:textColor="@color/textPrimary"
-          android:paddingRight="16dp"
-          android:textSize="16sp"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:background="?attr/selectableItemBackground"
+              android:orientation="horizontal"
+              android:gravity="center_vertical">
+
+    <ImageView android:layout_width="30dp" android:layout_height="30dp"
+               app:srcCompat="@drawable/icon_db"/>
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/tv_dbname"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:minHeight="?android:attr/listPreferredItemHeightSmall"
+              android:paddingLeft="26dp"
+              android:text="dbName"
+              android:lines="1"
+              android:ellipsize="end"
+              android:textColor="@color/textPrimary"
+              android:textSize="16sp"/>
+</LinearLayout>

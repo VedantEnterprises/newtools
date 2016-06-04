@@ -3,14 +3,13 @@ package xyz.hanks.hsqlite;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -19,17 +18,18 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.hanks.hsqlite.base.CommonAdapter;
+
 /**
  * Created by hanks on 16/5/6.
  */
 public class DbListFragment extends Fragment {
 
     private static final String APP_DATA_PATH = "app_data_path";
-    private ListView listView;
+    private RecyclerView recyclerView;
     private List<String> dbList = new ArrayList<>();
     private List<String> dbNameList = new ArrayList<>();
-    private ArrayAdapter adapter;
-
+    private DbListAdapter adapter;
 
     public static DbListFragment newInstance(String appDataDir) {
         Bundle args = new Bundle();
@@ -45,18 +45,23 @@ public class DbListFragment extends Fragment {
         return view;
     }
 
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
-        listView = (ListView) getView().findViewById(R.id.listView);
-        adapter = new ArrayAdapter(getActivity(), R.layout.list_item_db_list, dbNameList);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new DbListAdapter(view.getContext(), dbNameList);
+        //new ArrayAdapter(getActivity(), R.layout.list_item_db_list, dbNameList);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnRecyclerViewItemClickListener(new CommonAdapter.OnRecyclerViewItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
                 getFragmentManager().beginTransaction().add(R.id.fm_container, TableListFragment.newInstance(dbList.get(position))).addToBackStack("tableList").commit();
+
             }
         });
+        //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //            @Override
+        //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //            }
+        //        });
 
         getData();
     }
